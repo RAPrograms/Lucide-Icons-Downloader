@@ -9,6 +9,12 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+type icon_details struct {
+	Name         string
+	Contributors []string
+	SVG          string
+}
+
 const BASE_URL = "https://lucide.dev/icons/"
 
 func fetch_page(icon_name string) (*goquery.Document, error) {
@@ -29,6 +35,31 @@ func fetch_page(icon_name string) (*goquery.Document, error) {
 	return doc, nil
 }
 
+func extract_details(page *goquery.Document) icon_details {
+	// Get icon name
+	name := page.Find("main h1").Text()
+	fmt.Println("Name: ", name)
+
+	// Get contributors' usernames
+	contributors_selection := page.Find("main .contributors a")
+	contributors := make([]string, contributors_selection.Length())
+
+	contributors_selection.Each(func(i int, link *goquery.Selection) {
+		username, _ := link.Attr("data-name")
+		contributors[i] = username
+	})
+
+	// Get icon svg code
+	icon_target := page.Find("main svg").First()
+	svg, _ := goquery.OuterHtml(icon_target)
+
+	return icon_details{
+		Name:         name,
+		Contributors: contributors,
+		SVG:          svg,
+	}
+}
+
 func main() {
 	doc, err := fetch_page("Download")
 	if err != nil {
@@ -36,5 +67,5 @@ func main() {
 		return
 	}
 
-	fmt.Println(doc.Find("main h1").Text())
+	fmt.Println(extract_details(doc))
 }
