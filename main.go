@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -13,6 +14,28 @@ type icon_details struct {
 	Name         string
 	Contributors []string
 	SVG          string
+}
+
+func (details icon_details) format_contributors() string {
+	output := details.Contributors[0]
+	for i := 1; i < len(details.Contributors); i++ {
+		if i >= len(details.Contributors)-1 {
+			output += " & "
+		} else {
+			output += ", "
+		}
+
+		output += details.Contributors[i]
+	}
+	return output
+}
+
+func (details icon_details) to_string() string {
+	return fmt.Sprintf("<!-- Icon sourced from Lucide.dev -->\n"+
+		"<!-- Name: %s -->\n"+
+		"<!-- Contributors: %s -->\n\n%s",
+		details.Name, details.format_contributors(), details.SVG,
+	)
 }
 
 const BASE_URL = "https://lucide.dev/icons/"
@@ -38,7 +61,6 @@ func fetch_page(icon_name string) (*goquery.Document, error) {
 func extract_details(page *goquery.Document) icon_details {
 	// Get icon name
 	name := page.Find("main h1").Text()
-	fmt.Println("Name: ", name)
 
 	// Get contributors' usernames
 	contributors_selection := page.Find("main .contributors a")
@@ -60,12 +82,28 @@ func extract_details(page *goquery.Document) icon_details {
 	}
 }
 
+func save_icon(details icon_details) {
+	// Create a new file named "myfile.txt" in the same directory
+	file, err := os.Create("myfile.txt")
+	if err != nil { // Check for an error during file creation
+		panic(err)
+	}
+	defer file.Close() // Ensure the file is closed when the function exits
+
+	_, write_err := file.WriteString(details.to_string())
+	if write_err != nil {
+		panic(write_err)
+	}
+}
+
 func main() {
-	doc, err := fetch_page("Download")
+	doc, err := fetch_page("move-right")
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 
-	fmt.Println(extract_details(doc))
+	details := extract_details(doc)
+
+	save_icon(details)
 }
