@@ -69,7 +69,7 @@ func extract_details(page *goquery.Document) (icon_details, error) {
 
 func save_icon(details icon_details) error {
 	// Create a new file named "myfile.txt" in the same directory
-	file, err := os.Create("myfile.txt")
+	file, err := os.Create(fmt.Sprintf("%s.svg", details.Name))
 	if err != nil { // Check for an error during file creation
 		return err
 	}

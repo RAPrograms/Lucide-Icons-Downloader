@@ -39,3 +39,48 @@ func ParseTag(content string, start int) (string, bool, int) {
 
 	return buff.String(), ending, length
 }
+
+func FormatSVG(content string) string {
+	//Getting root node
+	tag, _, node_length := ParseTag(content, 0)
+
+	//Adding root
+	hierarchy := append(make([]string, 0), tag)
+	output := content[0 : node_length-1]
+
+	for i := node_length; i < len(content); i++ {
+		tag, node_end, node_length := ParseTag(content, i)
+
+		// Getting parent node and current node
+		parent_tag := hierarchy[len(hierarchy)-1]
+		node := content[max(0, i-1) : i+node_length-1]
+
+		// Ensuring next loop is the next tag (if exists)
+		i += node_length - 1
+
+		// Checks for nodes without children
+		if node_end && parent_tag == tag {
+			output += node
+			continue
+		}
+
+		// Adding or removing node, with children, to hieracrchy
+		if node_end {
+			hierarchy = hierarchy[:len(hierarchy)-1]
+		} else {
+			hierarchy = append(hierarchy, tag)
+		}
+
+		//Adds new line
+		output += "\n"
+
+		//Adds indentation
+		for i := 0; i < len(hierarchy)-1; i++ {
+			output += "\t"
+		}
+
+		output += node
+	}
+
+	return output
+}
