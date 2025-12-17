@@ -104,8 +104,17 @@ func extract_details(page *goquery.Document) icon_details {
 		contributors[i] = username
 	})
 
-	// Get icon svg code
+	// Get icon svg element
 	icon_target := page.Find("main svg").First()
+
+	// Remove all data-* attributes from the SVG tag only
+	for _, attr := range icon_target.Nodes[0].Attr {
+		if strings.HasPrefix(attr.Key, "data-") {
+			icon_target.RemoveAttr(attr.Key)
+		}
+	}
+
+	// Get svg code
 	svg, _ := goquery.OuterHtml(icon_target)
 
 	return icon_details{
