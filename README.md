@@ -1,11 +1,11 @@
 # Lucide.dev Icons Downloader
-A go based CLI for downloading icon(s) from [lucide.dev](lucide.dev) into the CWD 
+A go based CLI for downloading icon(s) from [lucide.dev](lucide.dev) into the CWD.
 
 ## Installation
 
 Install Go
 ~~~http
-  https://go.dev/doc/install
+  GET https://go.dev/doc/install
 ~~~
 
 Clone repository
@@ -38,3 +38,6 @@ Move the compiled file into the $Path folders on your respective system
 Usage: lucide [icons names]
 
 Example: lucide download upload
+```
+
+<img width="666" height="394" alt="image" src="https://github.com/user-attachments/assets/b5b7d724-228b-424a-be25-4abf4ea0063e" />
