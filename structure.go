@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"raprograms/lucide-icons-downloader/svgparser"
-)
+import "fmt"
 
 type icon_details struct {
 	Name         string
@@ -26,11 +23,9 @@ func (details icon_details) format_contributors() string {
 }
 
 func (details icon_details) to_string() string {
-	svg := svgparser.FormatSVG(details.SVG)
-
 	return fmt.Sprintf("<!-- Icon sourced from Lucide.dev -->\n"+
 		"<!-- Name: %s -->\n"+
 		"<!-- Contributors: %s -->\n\n%s",
-		details.Name, details.format_contributors(), svg,
+		details.Name, details.format_contributors(), details.SVG,
 	)
 }
