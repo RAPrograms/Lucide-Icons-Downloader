@@ -45,7 +45,7 @@ func extract_details(page *goquery.Document) (icon_details, error) {
 	})
 
 	// Get icon svg element
-	icon_target := page.Find("main svg").First()
+	icon_target := page.Find("main svg.preview-icon").First()
 
 	// Remove all data-* attributes from the SVG tag only
 	for _, attr := range icon_target.Nodes[0].Attr {
